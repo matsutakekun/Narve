@@ -55,7 +55,7 @@ export namespace Narve{
             this.elem = createElem(tag,attr||{})
             
             if(children.every(v=>v instanceof Narve.Component)){
-                this.children.set(...children)
+                    this.children.set(...children)
             }else{
                 this.elem.innerHTML = children.join('')
             }
@@ -81,6 +81,20 @@ export namespace Narve{
         removeElem(){
             this.elem.remove()
         }
+        setInnerText(text: string){
+            this.children = new NarveComponentArray(this)
+            this.elem.innerHTML = escapeHTML(text)
+        }
+        switchFocus(component: Component,display: string = "block"){
+            this.children.forEach(c=>c.hide())
+            component.display()
+        }
+        display(display: string = "block"){
+            this.elem.style.display = display
+        }
+        hide(){
+            this.elem.style.display = "none"
+        }
     }
 }
 function htmlToComponent(htmlElem: HTMLElement){
@@ -99,7 +113,7 @@ function htmlToComponent(htmlElem: HTMLElement){
     return component
 }
 function escapeHTML(string:string){
-    return string.replace(/&/g, '&lt;')
+    return string.replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
@@ -110,6 +124,7 @@ class NarveComponentArray extends Array<Narve.Component>{
     parent: Narve.Component
     constructor(parent: Narve.Component){
         super()
+        Object.setPrototypeOf(this, NarveComponentArray.prototype)
         this.parent = parent
     }
     copyWithin(target: number, start: number, end?: number){

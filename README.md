@@ -35,13 +35,11 @@ class HelloWorld extends Narve.Component {
 
 他にも様々なサンプルがあります。
 
-詳しくは[ドキュメント](https://shintoyamamoto.github.io/)を参照してください。
-
-# Requireme
+詳しくは[ドキュメント](documents/Tutorial.md)を参照してください。
 
 # Installation
 ```cmd
-npm install narve
+npx create-narve-app
 ```
 # License
 
