@@ -43,4 +43,4 @@ npx create-narve-app
 ```
 # License
 
-narve is under [MIT license](https://en.wikipedia.org/wiki/MIT_License).
+narve is under [MIT license](./LICENSE).
