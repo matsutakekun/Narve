@@ -114,6 +114,17 @@ var Narve;
                 this.children = htmlToComponent(component).children;
             }
         };
+        Component.prototype.removeChild = function (component) {
+            console.log(component);
+            var index = this.children.findIndex(function (v) {
+                console.log(v, component);
+                return v.elem === component.elem;
+            });
+            console.log(index);
+            if (index !== -1) {
+                this.children.delete(index, 1);
+            }
+        };
         Component.prototype.removeElem = function () {
             this.elem.remove();
         };

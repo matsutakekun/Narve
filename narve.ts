@@ -78,6 +78,17 @@ export namespace Narve{
                 this.children = htmlToComponent(component).children    
             }
         }
+        removeChild(component: Component){
+            console.log(component)
+            const index = this.children.findIndex(v=>{
+                console.log(v,component)
+                return v.elem===component.elem
+            })
+            console.log(index)
+            if(index !== -1){
+                this.children.delete(index, 1)
+            }
+        }
         removeElem(){
             this.elem.remove()
         }

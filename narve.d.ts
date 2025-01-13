@@ -10,6 +10,7 @@ export declare namespace Narve {
         constructor(tag?: string, attr?: attributes, ...children: Component[] | string[]);
         querySelector(querySelector: string): this;
         replaceWith(component: Component | HTMLElement): void;
+        removeChild(component: Component): void;
         removeElem(): void;
         setInnerText(text: string): void;
         switchFocus(component: Component, display?: string): void;
