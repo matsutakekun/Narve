@@ -46,10 +46,16 @@ class myComponent extends Narve.Component {
 
 順番に開発していきます。
 
-### Appに追加する
-`src/app.ts` 
 ### 新しいクラスを作成
 ```js
 import { Narve } from "narve"
 
+export default class AlertInput extends Narve.Component {
+  constructor(){
+    super()
+  }
+}
 ```
+
+### Appに追加する
+`src/app.ts` 
