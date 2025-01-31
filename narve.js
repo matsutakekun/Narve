@@ -91,7 +91,7 @@ var Narve;
                 (_a = this.children).set.apply(_a, children);
             }
             else {
-                this.elem.innerHTML = children.join('');
+                this.setInnerText(children.join(''));
             }
         }
         Component.prototype.querySelector = function (querySelector) {

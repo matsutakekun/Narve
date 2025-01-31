@@ -57,7 +57,7 @@ export namespace Narve{
             if(children.every(v=>v instanceof Narve.Component)){
                     this.children.set(...children)
             }else{
-                this.elem.innerHTML = children.join('')
+                this.setInnerText(children.join(''))
             }
         }
         querySelector(querySelector: string){
