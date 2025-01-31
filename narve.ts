@@ -130,8 +130,29 @@ function escapeHTML(string:string){
         .replace(/"/g, '&quot;')
         .replace(/'/g, "&#x27;");
 }
-
-class NarveComponentArray extends Array<Narve.Component>{
+interface NarveComponentArrayInterface {
+    parent: Narve.Component;
+    constructor: Function;
+    copyWithin(target: number, start: number, end?: number): this;
+    fill(value: Narve.Component, start?: number, end?: number): this;
+    pop(): Narve.Component|undefined;
+    push(...children: Narve.Component[]): number;
+    reverse(): this;
+    shift(): Narve.Component|undefined;
+    sort(compreFun: (a: Narve.Component, b: Narve.Component) => number): this;
+    /**
+     * @param start can't be bigger than this.length
+     */
+    splice(start: number, deleteCount?: number, ...rest: Narve.Component[]): Narve.Component[];
+    unshift(...rest: Narve.Component[]): number;
+    replace(i: number, val: Narve.Component): void;
+    delete(start: number, deleteCount?: number): Narve.Component[];
+    insert(start: number, ...children: Narve.Component[]): this|undefined;
+    set(...children: Narve.Component[]): void;
+    __REG_START__(x: number | undefined): number;
+    __REG_END__(x: number | undefined): number;
+}
+class NarveComponentArray extends Array<Narve.Component> implements NarveComponentArrayInterface{
     parent: Narve.Component
     constructor(parent: Narve.Component){
         super()
@@ -198,9 +219,13 @@ class NarveComponentArray extends Array<Narve.Component>{
         ret.removeElem()
         return ret
     }
-    sort(compreFun:(a:Narve.Component,b:Narve.Component)=>number){
+    sort(compreFun?:(a:Narve.Component,b:Narve.Component)=>number){
         const s = [...this.map(v=>deepClone(v))]
-            .sort((a,b)=>compreFun(a,b))
+        if(compreFun === undefined){
+            super.sort()
+        }else{  
+            s.sort((a,b)=>compreFun(a,b))
+        }
         s.forEach((v,i)=>this.replace(i,v))
         return this
     }
@@ -252,6 +277,13 @@ class NarveComponentArray extends Array<Narve.Component>{
     set(...children: Narve.Component[]){
         this.delete(0)
         this.push(...children)
+    }
+    map<U>(callback: (value: Narve.Component, index: number, array: Narve.Component[]) => U): U[] {
+        let mapped:U[] = Array<U>()
+        this.forEach((component,index,array) => {
+            mapped.push(callback(component,index,array))
+        })
+        return mapped
     }
     __REG_START__(x:number|undefined){
         if(x===undefined) x=0

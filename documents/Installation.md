@@ -1,10 +1,17 @@
 # Installation
 Narve.jsはnpxが使える環境下で以下のコマンドでインストールできます。
 ```
-npx @matsutakekun/create-narve-app
+npx create-narve-app
 ```
 コマンドを実行するとプロジェクト名を聞かれますので、好きなプロジェクト名を入力してください。
 
 Enterキーを押すとインストールが開始されます。
 
 インストールが完了したら、
+```
+cd <プロジェクト名>
+npm run dev
+```
+でプロジェクトフォルダに移動し、開発用サーバーを起動してください。
+
+では、[チュートリアル](Tutorial.md)に進みましょう！

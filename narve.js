@@ -256,7 +256,13 @@ var NarveComponentArray = /** @class */ (function (_super) {
     };
     NarveComponentArray.prototype.sort = function (compreFun) {
         var _this = this;
-        var s = __spreadArray([], this.map(function (v) { return deepClone(v); }), true).sort(function (a, b) { return compreFun(a, b); });
+        var s = __spreadArray([], this.map(function (v) { return deepClone(v); }), true);
+        if (compreFun === undefined) {
+            _super.prototype.sort.call(this);
+        }
+        else {
+            s.sort(function (a, b) { return compreFun(a, b); });
+        }
         s.forEach(function (v, i) { return _this.replace(i, v); });
         return this;
     };
@@ -325,6 +331,13 @@ var NarveComponentArray = /** @class */ (function (_super) {
         }
         this.delete(0);
         this.push.apply(this, children);
+    };
+    NarveComponentArray.prototype.map = function (callback) {
+        var mapped = Array();
+        this.forEach(function (component, index, array) {
+            mapped.push(callback(component, index, array));
+        });
+        return mapped;
     };
     NarveComponentArray.prototype.__REG_START__ = function (x) {
         if (x === undefined)

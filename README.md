@@ -42,7 +42,7 @@ class HelloWorld extends Narve.Component {
 
 # Installation
 ```cmd
-npx @matsutakekun/create-narve-app
+npx　create-narve-app
 ```
 # License
 

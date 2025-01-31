@@ -4,5 +4,9 @@
   "description": "",
   "main": "narve.js",
   "author": "matsutakekun",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/matsutakekun/Narve"
+  }
 }
