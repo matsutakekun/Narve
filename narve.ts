@@ -79,12 +79,9 @@ export namespace Narve{
             }
         }
         removeChild(component: Component){
-            console.log(component)
             const index = this.children.findIndex(v=>{
-                console.log(v,component)
                 return v.elem===component.elem
             })
-            console.log(index)
             if(index !== -1){
                 this.children.delete(index, 1)
             }
@@ -108,19 +105,17 @@ export namespace Narve{
         }
     }
 }
-function htmlToComponent(htmlElem: HTMLElement){
-    let attr = Object()
-    for(let i = 0; i < htmlElem.attributes.length; i++){
-        attr[htmlElem.attributes[i].name] = htmlElem.attributes[i].value
-    }
+export function htmlToComponent(htmlElem: HTMLElement){
     let component = new Narve.Component()
     component.elem = htmlElem
     if(htmlElem.children.length === 0){
         return component
     }
+    let childrenArray = new Array<Narve.Component>()
     for(let i = 0; i < htmlElem.children.length; i++){
-        component.children.push(htmlToComponent(<HTMLElement>htmlElem.children[i]))
+        childrenArray.push(htmlToComponent(<HTMLElement>htmlElem.children[i]))
     }
+    component.children = new NarveComponentArray(component,...childrenArray)
     return component
 }
 function escapeHTML(string:string){
@@ -154,10 +149,13 @@ interface NarveComponentArrayInterface {
 }
 class NarveComponentArray extends Array<Narve.Component> implements NarveComponentArrayInterface{
     parent: Narve.Component
-    constructor(parent: Narve.Component){
+    constructor(parent: Narve.Component,...children: Array<Narve.Component>){
         super()
         Object.setPrototypeOf(this, NarveComponentArray.prototype)
         this.parent = parent
+        children.forEach((child,i) => {
+            this[i] = child
+        })
     }
     copyWithin(target: number, start: number, end?: number){
         target = this.__REG_START__(target)
@@ -221,11 +219,7 @@ class NarveComponentArray extends Array<Narve.Component> implements NarveCompone
     }
     sort(compreFun?:(a:Narve.Component,b:Narve.Component)=>number){
         const s = [...this.map(v=>deepClone(v))]
-        if(compreFun === undefined){
-            super.sort()
-        }else{  
-            s.sort((a,b)=>compreFun(a,b))
-        }
+        qsort(s,compreFun)
         s.forEach((v,i)=>this.replace(i,v))
         return this
     }
@@ -298,6 +292,40 @@ class NarveComponentArray extends Array<Narve.Component> implements NarveCompone
         return x
     }
 }
+function qsort<T>(
+    arr:T[],
+    compareFun:(a: T,b: T) => number = (a,b) => {
+        const _a = JSON.stringify(a)
+        const _b = JSON.stringify(b)
+        return (_a > _b)?1:(_a < _b)?-1:0
+    },
+        
+    l=0,
+    r=arr.length-1){
+    if(r < 0) return
+    if(r >= arr.length) return
+    if(l < 0) return
+    if(l >= arr.length) return
+    if(l > r) return
 
-
-
+    const mid_i = Math.floor((l+r)/2)
+    const mid_v = arr[mid_i]
+    let i = l
+    let k = r
+    while(1){
+        while(compareFun(arr[i],mid_v) < 0) i++
+        while(compareFun(arr[k],mid_v) > 0) k--
+        if(i <= k){
+            [arr[i],arr[k]] = [arr[k],arr[i]]
+            i++
+            k--
+        }
+        if(i > k){
+            break
+        }
+    }
+    if(l < k) qsort(arr,compareFun,l,k)
+    if(i < r) qsort(arr,compareFun,i,r)
+    
+    return arr
+}

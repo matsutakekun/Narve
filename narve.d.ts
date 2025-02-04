@@ -18,6 +18,7 @@ export declare namespace Narve {
         hide(): void;
     }
 }
+export declare function htmlToComponent(htmlElem: HTMLElement): Narve.Component;
 interface NarveComponentArrayInterface {
     parent: Narve.Component;
     constructor: Function;
@@ -42,7 +43,7 @@ interface NarveComponentArrayInterface {
 }
 declare class NarveComponentArray extends Array<Narve.Component> implements NarveComponentArrayInterface {
     parent: Narve.Component;
-    constructor(parent: Narve.Component);
+    constructor(parent: Narve.Component, ...children: Array<Narve.Component>);
     copyWithin(target: number, start: number, end?: number): this;
     fill(value: Narve.Component, start?: number, end?: number): this;
     pop(): Narve.Component;
