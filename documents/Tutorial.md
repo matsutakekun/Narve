@@ -39,15 +39,25 @@ class myComponent extends Narve.Component {
 }
 ```
 ## Example
-ここでは例として次の機能を持った「AlertInput」コンポーネントを作成してみます。
-- 一つの `input` 要素がある
-- 一つの `button` 要素がある
+ここでは例として次の機能を持った「AlertInput」コンポーネントを作成してみましょう。
+- 一つの `input` 要素をもつ
+- 一つの `button` 要素をもつ
 - `button` 要素をクリックすると、 `input` 要素の内容をアラートする
 
 順番に開発していきます。
+### 開発用サーバーを起動
+プロジェクトフォルダに移動して、
+```shell
+npm run dev
+```
+を実行し、開発用サーバーを起動します。
+起動には時間がかかることがあります。
 
+開発用サーバーが起動すると、自動で開発中のページが開きます。
 ### 新しいクラスを作成
-```js
+`src`フォルダ内に`alertInput.js`を作成して次のように記述します。
+
+```js:src/alertInput.js
 import { Narve } from "narve"
 
 export default class AlertInput extends Narve.Component {
@@ -56,6 +66,8 @@ export default class AlertInput extends Narve.Component {
   }
 }
 ```
-
+この時点では`AlertInput`クラスには子要素や機能は追加されておらず、ただ`Narve.Component`クラスを継承しただけです。
 ### Appに追加する
-`src/app.ts` 
+```js:src/app.js
+
+``` 
