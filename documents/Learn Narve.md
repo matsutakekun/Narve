@@ -12,6 +12,7 @@ Webサイトは全て「部品」からできています。
 Narve.jsのコンポーネントとは`Narve.Component`を継承したクラスです。
 ```js
 import { Narve } from "narve"
+
 class MyComponent extends Narve.Component {
   constructor(){
     super("div",{class: "myDiv"},"Hello World")
@@ -25,7 +26,6 @@ class MyComponent extends Narve.Component {
 コンポーネントは他のコンポーネントにネストすることができます。
 ```js
 import { Narve } from "narve"
-import { MyComponent } from "<MyComponent file path>"
 
 class ParentComponent extends Narve.Component {
   constructor(){
@@ -33,6 +33,7 @@ class ParentComponent extends Narve.Component {
       // この書き方は非推奨
       new MyComponent()
     )
+  }
 }
 class MyComponent extends Narve.Component {
   constructor(){
@@ -62,8 +63,7 @@ import { nr } from "narve"
 
 nr("main",{class: "mainContents"},
   nr("div",{class: "inputs"},
-    nr("input",{placeholder: "type
-text"}),
+    nr("input",{placeholder: "type text"}),
     nr("button",{},"click here!")
   )
 )
@@ -74,16 +74,19 @@ text"}),
   <div class="inputs">
     <input placeholder="type text">
     <button>click here!</button>
-  </>
-</>.
+  </div>
+</main>
 ```
 
 # ファイル分割
 先程のように1つのファイルにコンポーネントを書くこともできますが、ファイルサイズが大きくなり過ぎます。
 
 そこで`export`を使用することで他のファイルからアクセスできるようになり、ファイルを複数に分割できます。
-```js
+
+`src/myComponent.js`に次のように入力します。
+```js:myComponent.js
 import { Narve } from "narve"
+
 export default class MyComponent extends Narve.Component {
   constructor(){
     super("div",{class: "myDiv"},"Hello World")
@@ -92,7 +95,17 @@ export default class MyComponent extends Narve.Component {
 ```
 `src/app.js`に次のように記述します。
 ```js:app.js
-// TODO
+import { Narve } from "narve"
+import "./styles.css"
+import MyComponent from "./myComponent"
+
+export default class App extends Narve.Component {
+  myComponent = new MyComponent()
+  constructor(){
+    super()
+    this.children.set(this.myComponent)
+  }
+}
 ```
 `app.js`に子要素を追加したので、
 開発用サーバーを立ち上げてブラウザに移動すると、コンポーネントが追加されていることが確認できます。
@@ -104,14 +117,15 @@ export default class MyComponent extends Narve.Component {
 
 Narve.jsではコンポーネントがクラスなのでコンストラクタの引数に属性値を与えることができます。
 ```js
-import { Narve } from "narve"
+import { Narve, nr } from "narve";
 
-class Profile extends Narve.Component {
+export default class Profile extends Narve.Component {
   constructor(name){
     super("div",{class: "profile"},
-      nr("h1",{},"Your Profile"),
-      nr("h2",{},name)
-    )
+      nr("h1",{},"Profile Page"),
+        nr("h2",{},name)
+      )
+    }
   }
 }
 ```
@@ -124,7 +138,7 @@ class Profile extends Narve.Component {
 const myComponent = new MyComponent()
 myComponent.elem.classList.add("newClass")
 ```
-クリック時の処理も追加してみましょう。
+クリック時の処理の追加もしてみましょう。
 ```js
 const myComponent = new MyComponent()
 myComponent.elem.onclick = () => {
@@ -135,9 +149,37 @@ myComponent.elem.onclick = () => {
 # 子要素の追加
 コンポーネントに子要素を追加するときは次のようにします。
 ```js
-//TODO
+import { Narve } from "narve"
+import MyComponent from "./myComponent"
+
+class ParentComponent extends Narve.Component {
+  myComponent = new MyComponent()
+  constructor(){
+    super("section",{class: "parentSection"},
+      this.myComponent
+    )
+  }
+}
 ```
 こうすることで、メンバ変数として子要素にアクセスできるので、例えば次のような使い方が可能です。
 ```js
-Profile.
+import { Narve, nr } from "narve";
+
+export default class Profile extends Narve.Component {
+  nameText
+  constructor(name){
+    super("div",{class: "profile"})
+    this.nameText = nr("h2",{},name)
+
+    this.children.set(
+      nr("h1",{},"Profile Page"),
+      this.nameText
+    )
+    this.nameText.elem.onclick = () => {
+      alert("name clicked!")
+    }
+  }
+}
 ```
+# innerTextの編集
+# 子要素の配列処理
