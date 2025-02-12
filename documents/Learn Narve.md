@@ -115,8 +115,29 @@ class Profile extends Narve.Component {
   }
 }
 ```
+
+# html要素にアクセス
+コンポーネントでも`elem`プロパティによって`htmlElement`のプロパティにアクセスできます。
+
+試しに`htmlElement.classList.add("newClass")`を呼び出してみます。
+```js
+const myComponent = new MyComponent()
+myComponent.elem.classList.add("newClass")
+```
+クリック時の処理も追加してみましょう。
+```js
+const myComponent = new MyComponent()
+myComponent.elem.onclick = () => {
+  alert("clicked!")
+}
+```
+
 # 子要素の追加
 コンポーネントに子要素を追加するときは次のようにします。
 ```js
 //TODO
+```
+こうすることで、メンバ変数として子要素にアクセスできるので、例えば次のような使い方が可能です。
+```js
+Profile.
 ```
