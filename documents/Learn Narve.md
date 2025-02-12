@@ -25,12 +25,11 @@ class MyComponent extends Narve.Component {
 コンポーネントは他のコンポーネントにネストすることができます。
 ```js
 import { Narve } from "narve"
+import { MyComponent } from "<MyComponent file path>"
 
 class ParentComponent extends Narve.Component {
-  myChild = new MyComponent()
   constructor(){
-    super("section",{class: "parentSection"})
-    this.children.set(this.myChild)
+    super("section",{class: "parentSection"},new MyComponent()
   }
 }
 class MyComponent extends Narve.Component {
@@ -46,11 +45,34 @@ htmlではこのようになります。
 </section>
 ```
 
+# 簡易的なコンポーネント
+普通のボタンやテキストのためにいちいちクラスを定義するのは面倒です。そのようなときは`nr`関数を使いましょう。この関数はネストできます。
+```js
+import { nr } from "narve"
+
+nr("main",{class: "mainContents"},
+  nr("div",{class: "inputs"},
+    nr("input",{placeholder: "type
+text"}),
+    nr("button",{},"click here!")
+  )
+)
+```
+上の例は次のhtml要素を意味します。
+```html
+<main class="mainContents">
+  <div class="inputs">
+    <input placeholder="type text">
+    <button>click here!</button>
+  </>
+</>.
+```
+
 # ファイル分割
 先程のように1つのファイルにコンポーネントを書くこともできますが、ファイルサイズが大きくなり過ぎます。
 
 そこで`export`を使用することで他のファイルからアクセスできるようになり、ファイルを複数に分割できます。
-```js:myComponent.js
+```js
 import { Narve } from "narve"
 export default class MyComponent extends Narve.Component {
   constructor(){
@@ -58,14 +80,12 @@ export default class MyComponent extends Narve.Component {
   }
 }
 ```
+`src/app.js`に次のように記述します。
 ```js:app.js
 // TODO
 ```
 `app.js`に子要素を追加したので、
 開発用サーバーを立ち上げてブラウザに移動すると、コンポーネントが追加されていることが確認できます。
-
-# nr
-//FROM
 
 # コンポーネントの属性値
 ほとんど同じコンポーネントで、ほんの少し違うコンポーネントを作りたいことがありませんか？
@@ -75,9 +95,13 @@ export default class MyComponent extends Narve.Component {
 Narve.jsではコンポーネントがクラスなのでコンストラクタの引数に属性値を与えることができます。
 ```js
 import { Narve } from "narve"
+
 class Profile extends Narve.Component {
   constructor(name){
-    super("p",{class: "profileName"},name)
+    super("div",{class: "profile"},
+      nr("h1",{},"Your Profile"),
+      nr("h2",{},name)
+    )
   }
 }
 ```
