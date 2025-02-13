@@ -155,9 +155,8 @@ import MyComponent from "./myComponent"
 class ParentComponent extends Narve.Component {
   myComponent = new MyComponent()
   constructor(){
-    super("section",{class: "parentSection"},
-      this.myComponent
-    )
+    super("section",{class: "parentSection"})
+    // TODO
   }
 }
 ```
