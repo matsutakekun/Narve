@@ -1,23 +1,12 @@
 type attributes = object
-type innerHTML = string|HTMLElement|HTMLElement[]
 
-function createElem(tag?:string,attributes?:attributes,children?:innerHTML){
+function createElem(tag?:string,attributes?:attributes){
     if(tag===undefined)tag="div"
     let elem = document.createElement(tag)
     if(attributes){
         Object.entries(attributes).forEach(([key, value]) => {
             elem.setAttribute(key,value)
         })
-    }
-    if(children !== undefined)
-    if(Array.isArray(children)){
-        children.forEach(child => {
-            elem.appendChild(child)
-        })
-    }else if(typeof children === "string"){
-        elem.innerHTML = escapeHTML(children)
-    }else{
-        elem.appendChild(children)
     }
     return elem
 }
@@ -26,14 +15,13 @@ function createComponent(tag?:string,attributes?:attributes,...children:Narve.Co
     return component
 }
 function deepClone(val:Narve.Component){
-    let ret
+    let ret: Narve.Component
     try{
         ret = htmlToComponent(<HTMLElement>val.elem.cloneNode(true))
     }catch{
-        console.error("deepClone",val)
+        console.warn("couldn't deepClone")
         return nr()
     }
-
     return ret
 }
 function querySelector(querySelector: string){
@@ -91,7 +79,7 @@ export namespace Narve{
         }
         setInnerText(text: string){
             this.children = new NarveComponentArray(this)
-            this.elem.innerHTML = escapeHTML(text)
+            this.elem.innerText = text
         }
         switchFocus(component: Component,display: string = "block"){
             this.children.forEach(c=>c.hide())
@@ -117,13 +105,6 @@ export function htmlToComponent(htmlElem: HTMLElement){
     }
     component.children = new NarveComponentArray(component,...childrenArray)
     return component
-}
-function escapeHTML(string:string){
-    return string.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, "&#x27;");
 }
 interface NarveComponentArrayInterface {
     parent: Narve.Component;

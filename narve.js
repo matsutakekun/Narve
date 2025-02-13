@@ -26,7 +26,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Narve = exports.nr = void 0;
 exports.htmlToComponent = htmlToComponent;
-function createElem(tag, attributes, children) {
+function createElem(tag, attributes) {
     if (tag === undefined)
         tag = "div";
     var elem = document.createElement(tag);
@@ -36,18 +36,6 @@ function createElem(tag, attributes, children) {
             elem.setAttribute(key, value);
         });
     }
-    if (children !== undefined)
-        if (Array.isArray(children)) {
-            children.forEach(function (child) {
-                elem.appendChild(child);
-            });
-        }
-        else if (typeof children === "string") {
-            elem.innerHTML = escapeHTML(children);
-        }
-        else {
-            elem.appendChild(children);
-        }
     return elem;
 }
 function createComponent(tag, attributes) {
@@ -65,7 +53,7 @@ function deepClone(val) {
         ret = htmlToComponent(val.elem.cloneNode(true));
     }
     catch (_c) {
-        console.error("deepClone", val);
+        console.warn("couldn't deepClone");
         return (0, exports.nr)();
     }
     return ret;
@@ -128,7 +116,7 @@ var Narve;
         };
         Component.prototype.setInnerText = function (text) {
             this.children = new NarveComponentArray(this);
-            this.elem.innerHTML = escapeHTML(text);
+            this.elem.innerText = text;
         };
         Component.prototype.switchFocus = function (component, display) {
             if (display === void 0) { display = "block"; }
@@ -158,13 +146,6 @@ function htmlToComponent(htmlElem) {
     }
     component.children = new (NarveComponentArray.bind.apply(NarveComponentArray, __spreadArray([void 0, component], childrenArray, false)))();
     return component;
-}
-function escapeHTML(string) {
-    return string.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, "&#x27;");
 }
 var NarveComponentArray = /** @class */ (function (_super) {
     __extends(NarveComponentArray, _super);
