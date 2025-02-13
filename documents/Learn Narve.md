@@ -182,4 +182,8 @@ export default class Profile extends Narve.Component {
 }
 ```
 # innerTextの編集
+コンポーネントの内容をクリアし、テキストを設定するには`setInnerText`を使用します。
+```js
+// TODO
+```
 # 子要素の配列処理
