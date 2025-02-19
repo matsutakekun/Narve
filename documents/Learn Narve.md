@@ -182,7 +182,14 @@ export default class Profile extends Narve.Component {
 ```
 # innerTextの編集
 コンポーネントの内容をクリアし、テキストを設定するには`setInnerText`を使用します。
+この関数は、`innerText`へ代入し、子要素をクリアします。
 ```js
 // TODO
 ```
 # 子要素の配列処理
+`Narve.Compoment`は子要素をまとめたプロパティである`children`を持ちます。
+このプロパティは配列のように扱えます。
+非破壊的メソッドは基本的に配列と同じ処理を行います。
+- `slice`
+- `map`
+- 
