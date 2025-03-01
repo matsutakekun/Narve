@@ -1,4 +1,6 @@
 # Learn Narve
+このドキュメントではNarve.jsの基本的な考え方を学びます。
+
 Narve.jsはVanillaの書き方を尊重します。
 Narve.jsはJavaScriptでの開発を強力に手助けしますが、今までのやり方を変える必要はありません。
 
@@ -187,9 +189,11 @@ export default class Profile extends Narve.Component {
 ```
 # innerTextの編集
 コンポーネントの内容をクリアし、テキストを設定するには`setInnerText`を使用します。
-この関数は、`innerText`へ代入し、子要素をクリアします。
+
+この関数は、与えられた文字列を`innerText`へ代入し、子要素をクリアします。
 ```js
-// TODO
+const component = nr()
+component.setInnerText("Hello World")
 ```
 # 子要素の配列処理
 `Narve.Compoment`は子要素をまとめたプロパティである`children`を持ちます。
@@ -204,6 +208,9 @@ export default class Profile extends Narve.Component {
 - `push`
 > [!Warning]
 > 子要素の値を配列処理によって書き換えるとき、`[]`を使用しないでください。
+> 
 > `[]`を使用して配列を変更しても子要素は変更されません。
+> 
 > `[]`の代わりに`replace()`を使用してください。
+> 
 > `[]`は読み取りに限り使用できます。
