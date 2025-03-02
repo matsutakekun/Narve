@@ -15,4 +15,4 @@ npm run dev
 を実行することで、プロジェクトフォルダに移動し、開発用サーバーを起動します。
 
 これでインストールは完了です。  
-[Learn Narve](LearnNarve.md)を読んで、開発を始めましょう！
+[Learn Narve](Learn%20Narve.md)を読んで、開発を始めましょう！
