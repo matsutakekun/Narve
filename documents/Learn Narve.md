@@ -37,10 +37,10 @@ class MyComponent extends Narve.Component {
 import { Narve } from "narve"
 
 class ParentComponent extends Narve.Component {
+  myComponent = new MyComponent()
   constructor(){
     super("section",{class: "parentSection"},
-      // この書き方は非推奨
-      new MyComponent()
+      this.children.set(this.myComponent)
     )
   }
 }
@@ -56,14 +56,6 @@ htmlではこのようになります。
  <div class="myDiv">Hello World</div> 
 </section>
 ```
-> [!Warning]
-> 以下の書き方は推奨されていません。
-> ```
-> super("...",{...},
->   new MyComponent()
-> )
-> ```
-> 推奨された書き方については、[子要素の追加](#子要素の追加)を参照してください。
 
 # 簡易的なコンポーネント
 普通のボタンやテキストのためにいちいちクラスを定義するのは面倒です。そのようなときは`nr`関数を使いましょう。この関数はネストできます。
