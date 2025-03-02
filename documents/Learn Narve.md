@@ -165,7 +165,7 @@ class ParentComponent extends Narve.Component {
   myComponent = new MyComponent()
   constructor(){
     super("section",{class: "parentSection"})
-    // TODO
+    children.set(myComponent)
   }
 }
 ```
