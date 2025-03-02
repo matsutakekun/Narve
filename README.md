@@ -1,6 +1,8 @@
 # Narve.js
 Narve.jsはユーザーインターフェースの構築を助けるJavaScriptライブラリです。
 
+このライブラリはベータ版です。バグがあったり、使いにくい箇所があればGithubリポジトリの[Issue](https://github.com/matsutakekun/Narve/issues)を通じて報告していただけると機能改善の参考になります。
+
 - **既知の書き方**: Narve.jsはVanillaの書き方、考え方に沿ったフレームワークです。これにより学習のハードルを低くすることができる上、プロジェクトへの導入もスムーズです。JavaScriptを知っていれば誰でも簡単に導入することができます。
 
 - **コンポーネント指向**: ボタンや入力画面などの機能単位でコンポーネントを作成することで、可読性・再利用性を高めることができます。また、コンポーネントはclassで宣言されるので、関数メソッドを持つことができ、コンポーネント操作を簡潔に書くことができます。
@@ -33,14 +35,11 @@ class HelloWorld extends Narve.Component {
 ```
 のように解釈されます。
 
-他にも様々なサンプルがあります。
-
-詳しくは[ドキュメント](documents/Tutorial.md)を参照してください。
+より詳しくNarve.jsについて知りたい場合は[Learn Narve](documents/Learn%20Narve.md)を参照してください。
 
 # Installation
 ```cmd
 npx create-narve-app
 ```
 # License
-
-narve is under [MIT license](./LICENSE).
+narve is under [MIT license](LICENSE).

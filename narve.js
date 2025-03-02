@@ -25,37 +25,26 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Narve = exports.nr = void 0;
-function createElem(tag, attributes, children) {
+exports.htmlToComponent = htmlToComponent;
+function createElem(tag, attributes) {
     if (tag === undefined)
         tag = "div";
     var elem = document.createElement(tag);
     if (attributes) {
-        Object.entries(attributes).forEach(function (_a) {
-            var key = _a[0], value = _a[1];
+        Object.entries(attributes).forEach(function (_c) {
+            var key = _c[0], value = _c[1];
             elem.setAttribute(key, value);
         });
     }
-    if (children !== undefined)
-        if (Array.isArray(children)) {
-            children.forEach(function (child) {
-                elem.appendChild(child);
-            });
-        }
-        else if (typeof children === "string") {
-            elem.innerHTML = escapeHTML(children);
-        }
-        else {
-            elem.appendChild(children);
-        }
     return elem;
 }
 function createComponent(tag, attributes) {
-    var _a;
+    var _c;
     var children = [];
     for (var _i = 2; _i < arguments.length; _i++) {
         children[_i - 2] = arguments[_i];
     }
-    var component = new ((_a = Narve.Component).bind.apply(_a, __spreadArray([void 0, tag, attributes], children, false)))();
+    var component = new ((_c = Narve.Component).bind.apply(_c, __spreadArray([void 0, tag, attributes], children, false)))();
     return component;
 }
 function deepClone(val) {
@@ -63,8 +52,8 @@ function deepClone(val) {
     try {
         ret = htmlToComponent(val.elem.cloneNode(true));
     }
-    catch (_a) {
-        console.error("deepClone", val);
+    catch (_c) {
+        console.warn("couldn't deepClone");
         return (0, exports.nr)();
     }
     return ret;
@@ -80,7 +69,7 @@ var Narve;
     Narve.q = querySelector;
     var Component = /** @class */ (function () {
         function Component(tag, attr) {
-            var _a;
+            var _c;
             var children = [];
             for (var _i = 2; _i < arguments.length; _i++) {
                 children[_i - 2] = arguments[_i];
@@ -88,10 +77,10 @@ var Narve;
             this.children = new NarveComponentArray(this);
             this.elem = createElem(tag, attr || {});
             if (children.every(function (v) { return v instanceof Narve.Component; })) {
-                (_a = this.children).set.apply(_a, children);
+                (_c = this.children).set.apply(_c, children);
             }
             else {
-                this.elem.innerHTML = children.join('');
+                this.setInnerText(children.join(''));
             }
         }
         Component.prototype.querySelector = function (querySelector) {
@@ -115,12 +104,9 @@ var Narve;
             }
         };
         Component.prototype.removeChild = function (component) {
-            console.log(component);
             var index = this.children.findIndex(function (v) {
-                console.log(v, component);
                 return v.elem === component.elem;
             });
-            console.log(index);
             if (index !== -1) {
                 this.children.delete(index, 1);
             }
@@ -130,7 +116,7 @@ var Narve;
         };
         Component.prototype.setInnerText = function (text) {
             this.children = new NarveComponentArray(this);
-            this.elem.innerHTML = escapeHTML(text);
+            this.elem.innerText = text;
         };
         Component.prototype.switchFocus = function (component, display) {
             if (display === void 0) { display = "block"; }
@@ -149,33 +135,31 @@ var Narve;
     Narve.Component = Component;
 })(Narve || (exports.Narve = Narve = {}));
 function htmlToComponent(htmlElem) {
-    var attr = Object();
-    for (var i = 0; i < htmlElem.attributes.length; i++) {
-        attr[htmlElem.attributes[i].name] = htmlElem.attributes[i].value;
-    }
     var component = new Narve.Component();
     component.elem = htmlElem;
     if (htmlElem.children.length === 0) {
         return component;
     }
+    var childrenArray = new Array();
     for (var i = 0; i < htmlElem.children.length; i++) {
-        component.children.push(htmlToComponent(htmlElem.children[i]));
+        childrenArray.push(htmlToComponent(htmlElem.children[i]));
     }
+    component.children = new (NarveComponentArray.bind.apply(NarveComponentArray, __spreadArray([void 0, component], childrenArray, false)))();
     return component;
-}
-function escapeHTML(string) {
-    return string.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, "&#x27;");
 }
 var NarveComponentArray = /** @class */ (function (_super) {
     __extends(NarveComponentArray, _super);
     function NarveComponentArray(parent) {
+        var children = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            children[_i - 1] = arguments[_i];
+        }
         var _this = _super.call(this) || this;
         Object.setPrototypeOf(_this, NarveComponentArray.prototype);
         _this.parent = parent;
+        children.forEach(function (child, i) {
+            _this[i] = child;
+        });
         return _this;
     }
     NarveComponentArray.prototype.copyWithin = function (target, start, end) {
@@ -256,7 +240,8 @@ var NarveComponentArray = /** @class */ (function (_super) {
     };
     NarveComponentArray.prototype.sort = function (compreFun) {
         var _this = this;
-        var s = __spreadArray([], this.map(function (v) { return deepClone(v); }), true).sort(function (a, b) { return compreFun(a, b); });
+        var s = __spreadArray([], this.map(function (v) { return deepClone(v); }), true);
+        qsort(s, compreFun);
         s.forEach(function (v, i) { return _this.replace(i, v); });
         return this;
     };
@@ -326,6 +311,13 @@ var NarveComponentArray = /** @class */ (function (_super) {
         this.delete(0);
         this.push.apply(this, children);
     };
+    NarveComponentArray.prototype.map = function (callback) {
+        var mapped = Array();
+        this.forEach(function (component, index, array) {
+            mapped.push(callback(component, index, array));
+        });
+        return mapped;
+    };
     NarveComponentArray.prototype.__REG_START__ = function (x) {
         if (x === undefined)
             x = 0;
@@ -346,3 +338,46 @@ var NarveComponentArray = /** @class */ (function (_super) {
     };
     return NarveComponentArray;
 }(Array));
+function qsort(arr, compareFun, l, r) {
+    var _c;
+    if (compareFun === void 0) { compareFun = function (a, b) {
+        var _a = JSON.stringify(a);
+        var _b = JSON.stringify(b);
+        return (_a > _b) ? 1 : (_a < _b) ? -1 : 0;
+    }; }
+    if (l === void 0) { l = 0; }
+    if (r === void 0) { r = arr.length - 1; }
+    if (r < 0)
+        return;
+    if (r >= arr.length)
+        return;
+    if (l < 0)
+        return;
+    if (l >= arr.length)
+        return;
+    if (l > r)
+        return;
+    var mid_i = Math.floor((l + r) / 2);
+    var mid_v = arr[mid_i];
+    var i = l;
+    var k = r;
+    while (1) {
+        while (compareFun(arr[i], mid_v) < 0)
+            i++;
+        while (compareFun(arr[k], mid_v) > 0)
+            k--;
+        if (i <= k) {
+            _c = [arr[k], arr[i]], arr[i] = _c[0], arr[k] = _c[1];
+            i++;
+            k--;
+        }
+        if (i > k) {
+            break;
+        }
+    }
+    if (l < k)
+        qsort(arr, compareFun, l, k);
+    if (i < r)
+        qsort(arr, compareFun, i, r);
+    return arr;
+}
