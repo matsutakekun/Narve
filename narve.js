@@ -121,7 +121,7 @@ var Narve;
         Component.prototype.switchFocus = function (component, display) {
             if (display === void 0) { display = "block"; }
             this.children.forEach(function (c) { return c.hide(); });
-            component.display();
+            component.display(display);
         };
         Component.prototype.display = function (display) {
             if (display === void 0) { display = "block"; }

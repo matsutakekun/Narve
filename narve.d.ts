@@ -1,15 +1,15 @@
 type attributes = object;
-declare function createComponent(tag?: string, attributes?: attributes, ...children: Narve.Component[] | string[]): Narve.Component;
-declare function querySelector(querySelector: string): Narve.Component;
+declare function createComponent<T extends HTMLElement>(tag?: string, attributes?: attributes, ...children: Narve.Component[] | string[]): Narve.Component<T>;
+declare function querySelector(querySelector: string): Narve.Component<HTMLElement>;
 export declare const nr: typeof createComponent;
 export declare namespace Narve {
     const q: typeof querySelector;
-    class Component {
-        elem: HTMLElement;
+    class Component<T extends HTMLElement = HTMLElement> {
+        elem: T;
         children: NarveComponentArray;
         constructor(tag?: string, attr?: attributes, ...children: Component[] | string[]);
         querySelector(querySelector: string): this;
-        replaceWith(component: Component | HTMLElement): void;
+        replaceWith(component: Component<T> | HTMLElement): void;
         removeChild(component: Component): void;
         removeElem(): void;
         setInnerText(text: string): void;
@@ -18,7 +18,7 @@ export declare namespace Narve {
         hide(): void;
     }
 }
-export declare function htmlToComponent(htmlElem: HTMLElement): Narve.Component;
+export declare function htmlToComponent(htmlElem: HTMLElement): Narve.Component<HTMLElement>;
 interface NarveComponentArrayInterface {
     parent: Narve.Component;
     constructor: Function;
@@ -46,10 +46,10 @@ declare class NarveComponentArray extends Array<Narve.Component> implements Narv
     constructor(parent: Narve.Component, ...children: Array<Narve.Component>);
     copyWithin(target: number, start: number, end?: number): this;
     fill(value: Narve.Component, start?: number, end?: number): this;
-    pop(): Narve.Component;
+    pop(): Narve.Component<HTMLElement>;
     push(...children: Narve.Component[]): number;
     reverse(): this;
-    shift(): Narve.Component;
+    shift(): Narve.Component<HTMLElement>;
     sort(compreFun?: (a: Narve.Component, b: Narve.Component) => number): this;
     /**
      * @param start can't be bigger than this.length
@@ -57,7 +57,7 @@ declare class NarveComponentArray extends Array<Narve.Component> implements Narv
     splice(start: number, deleteCount?: number, ...rest: Narve.Component[]): Narve.Component[];
     unshift(...rest: Narve.Component[]): number;
     replace(i: number, val: Narve.Component): void;
-    delete(start: number, deleteCount?: number): Narve.Component[];
+    delete(start: number, deleteCount?: number): Narve.Component<HTMLElement>[];
     insert(start: number, ...children: Narve.Component[]): this;
     set(...children: Narve.Component[]): void;
     map<U>(callback: (value: Narve.Component, index: number, array: Narve.Component[]) => U): U[];

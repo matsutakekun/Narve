@@ -1,6 +1,6 @@
 type attributes = object
 
-function createElem(tag?:string,attributes?:attributes){
+function createElem<T extends HTMLElement>(tag?:string,attributes?:attributes): T{
     if(tag===undefined)tag="div"
     let elem = document.createElement(tag)
     if(attributes){
@@ -8,10 +8,10 @@ function createElem(tag?:string,attributes?:attributes){
             elem.setAttribute(key,value)
         })
     }
-    return elem
+    return elem as T
 }
-function createComponent(tag?:string,attributes?:attributes,...children:Narve.Component[]|string[]){
-    let component = new Narve.Component(tag,attributes,...children)
+function createComponent<T extends HTMLElement>(tag?:string,attributes?:attributes,...children:Narve.Component[]|string[]): Narve.Component<T>{
+    let component = new Narve.Component<T>(tag,attributes,...children)
     return component
 }
 function deepClone(val:Narve.Component){
@@ -35,12 +35,12 @@ export const nr = createComponent
 export namespace Narve{
     export const q = querySelector
 
-    export class Component {
-        elem: HTMLElement
+    export class Component<T extends HTMLElement = HTMLElement> {
+        elem: T
         children: NarveComponentArray
         constructor(tag?: string,attr?: attributes,...children: Component[]|string[]){
             this.children = new NarveComponentArray(this)
-            this.elem = createElem(tag,attr||{})
+            this.elem = createElem<T>(tag,attr||{})
             
             if(children.every(v=>v instanceof Narve.Component)){
                     this.children.set(...children)
@@ -51,18 +51,18 @@ export namespace Narve{
         querySelector(querySelector: string){
             const el: HTMLElement|null = document.querySelector(querySelector)
             if(el===null)return null
-            this.elem = el || createElem("div")
+            this.elem = el as T || createElem<T>("div")
             this.children = htmlToComponent(this.elem).children
             return this
         }
-        replaceWith(component:Component|HTMLElement){
+        replaceWith(component:Component<T>|HTMLElement){
             if(component instanceof Component){
                 this.elem.replaceWith(component.elem)
                 this.elem = component.elem
                 this.children = component.children
             }else{
                 this.elem.replaceWith(component)
-                this.elem = component
+                this.elem = component as T
                 this.children = htmlToComponent(component).children    
             }
         }
@@ -83,7 +83,7 @@ export namespace Narve{
         }
         switchFocus(component: Component,display: string = "block"){
             this.children.forEach(c=>c.hide())
-            component.display()
+            component.display(display)
         }
         display(display: string = "block"){
             this.elem.style.display = display
